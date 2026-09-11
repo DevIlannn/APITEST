@@ -58,7 +58,16 @@ router.get("/apitest/pengguna/:id", async (req, res) => {
 
 router.post("/apitest/pengguna", async (req, res) => {
     try {
-        const { email, kata_sandi, nama_pengguna, nama_lengkap } = req.body;
+        const {
+            email,
+            kata_sandi,
+            nama_pengguna,
+            nama_lengkap,
+            url_avatar,
+            nomor_telepon,
+            peran,
+            status,
+        } = req.body;
 
         if (!email || !kata_sandi || !nama_lengkap) {
             return res.status(400).json({
@@ -70,10 +79,19 @@ router.post("/apitest/pengguna", async (req, res) => {
         const kata_sandi_hash = await bcrypt.hash(kata_sandi, 10);
 
         const hasil = await pool.query(
-            `INSERT INTO pengguna (email, kata_sandi_hash, nama_pengguna, nama_lengkap)
-             VALUES ($1, $2, $3, $4)
+            `INSERT INTO pengguna (email, kata_sandi_hash, nama_pengguna, nama_lengkap, url_avatar, nomor_telepon, peran, status)
+             VALUES ($1, $2, $3, $4, $5, $6, COALESCE($7, 'pengguna'), COALESCE($8, 'aktif'))
              RETURNING ${KOLOM_AMAN}`,
-            [email, kata_sandi_hash, nama_pengguna || null, nama_lengkap]
+            [
+                email,
+                kata_sandi_hash,
+                nama_pengguna || null,
+                nama_lengkap,
+                url_avatar || null,
+                nomor_telepon || null,
+                peran || null,
+                status || null,
+            ]
         );
 
         res.status(201).json({

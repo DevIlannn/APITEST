@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Poppins:wght@400;500;600&family=Cookie&display=swap" rel="stylesheet">
 <style>
 :root {
     --warna-latar: #FFFFFF;
@@ -16,6 +16,7 @@
     --warna-teks-muda: #666666;
     --font-body: 'Poppins', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    --font-aksen: 'Cookie', cursive;
 }
 * {
     margin: 0;
@@ -43,10 +44,15 @@ h1 {
     flex-direction: column;
     gap: 16px;
 }
+.bungkus-tabel {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--warna-latar-sekunder);
+}
 table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
-    border: 1px solid var(--warna-latar-sekunder);
 }
 th, td {
     text-align: left;
@@ -54,10 +60,18 @@ th, td {
     border: 1px solid var(--warna-latar-sekunder);
     font-size: 14px;
     font-family: var(--font-body);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 th {
     background: var(--warna-latar-sekunder);
     font-weight: 500;
+}
+th:last-child, td:last-child {
+    width: 52px;
+    text-align: center;
+    overflow: visible;
 }
 tbody tr:hover {
     background: var(--warna-latar-sekunder);
@@ -65,6 +79,7 @@ tbody tr:hover {
 .baris-kosong td {
     text-align: center;
     padding: 64px 16px;
+    white-space: normal;
 }
 .baris-kosong .kosong {
     display: flex;
@@ -88,6 +103,32 @@ tbody tr:hover {
 .btn-aksi:hover {
     background: var(--warna-latar-sekunder);
 }
+.bilah-bawah {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.btn-tambah {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--warna-latar);
+    background: var(--warna-latar-sekunder);
+    color: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.btn-tambah:hover {
+    opacity: 0.85;
+}
 .paginasi {
     display: flex;
     align-items: center;
@@ -95,7 +136,7 @@ tbody tr:hover {
     gap: 8px;
 }
 .paginasi.tersembunyi {
-    display: none;
+    visibility: hidden;
 }
 .tombol-paginasi {
     display: inline-flex;
@@ -140,15 +181,28 @@ tbody tr:hover {
 .modal {
     width: 100%;
     max-width: 420px;
+    max-height: 85vh;
     background: var(--warna-latar);
     border-radius: 8px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.modal.modal-lebar {
+    max-width: 668px;
 }
 .modal-header {
     display: flex;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: space-between;
     padding: 12px 16px;
+    flex-shrink: 0;
+}
+.modal-header h2 {
+    font-size: 15px;
+    font-weight: 500;
+    font-family: var(--font-body);
 }
 .btn-tutup {
     display: inline-flex;
@@ -160,6 +214,7 @@ tbody tr:hover {
     background: transparent;
     cursor: pointer;
     color: var(--warna-teks);
+    flex-shrink: 0;
 }
 .modal-body {
     display: flex;
@@ -167,6 +222,8 @@ tbody tr:hover {
     align-items: center;
     padding: 0 24px 24px;
     text-align: center;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .modal-avatar {
     width: 88px;
@@ -175,6 +232,7 @@ tbody tr:hover {
     object-fit: cover;
     background: var(--warna-latar-sekunder);
     margin-bottom: 16px;
+    flex-shrink: 0;
 }
 .modal-nama {
     font-size: 18px;
@@ -187,72 +245,311 @@ tbody tr:hover {
     border: none;
     border-top: 1px solid var(--warna-latar-sekunder);
     margin-bottom: 16px;
+    flex-shrink: 0;
 }
 .modal-grid {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
     text-align: left;
 }
 .modal-field {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0;
+    min-width: 0;
+}
+.modal-field-hr {
+    border: none;
+    border-top: 1px solid var(--warna-latar-sekunder);
+    margin: 0 -4px;
+    width: calc(100% + 8px);
 }
 .modal-field span {
+    text-align: left;
+    font-size: 11px;
+    color: var(--warna-teks-muda);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.modal-field strong {
+    text-align: right;
+    font-size: 14px;
+    font-weight: 400;
+    word-break: break-word;
+    font-family: var(--font-body);
+}
+.form-tambah {
+    width: 100%;
+    text-align: left;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.kolom-penuh {
+    grid-column: 1 / -1;
+}
+.field-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+.field-form label {
     font-size: 11px;
     color: var(--warna-teks-muda);
     text-transform: uppercase;
     font-family: var(--font-mono);
     font-weight: 500;
 }
-.modal-field strong {
-    font-size: 14px;
-    font-weight: 400;
-    word-break: break-word;
+.field-form select {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 4px;
+    background: var(--warna-latar);
+    color: var(--warna-teks);
     font-family: var(--font-body);
+    font-size: 14px;
 }
-@media (max-width: 480px) {
+.field-form select:focus {
+    outline: none;
+    border-color: var(--warna-teks);
+}
+.field-mengambang {
+    position: relative;
+    min-width: 0;
+}
+.field-mengambang input {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 4px;
+    background: var(--warna-latar);
+    color: var(--warna-teks);
+    font-family: var(--font-body);
+    font-size: 14px;
+}
+.field-mengambang input:focus {
+    outline: none;
+    border-color: var(--warna-teks);
+}
+.field-mengambang label {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0 4px;
+    background: var(--warna-latar);
+    color: var(--warna-teks-muda);
+    font-size: 14px;
+    font-family: var(--font-body);
+    text-transform: none;
+    pointer-events: none;
+    transition: top 0.15s, font-size 0.15s, transform 0.15s, color 0.15s;
+}
+.field-mengambang input:focus + label,
+.field-mengambang input:not(:placeholder-shown) + label {
+    top: 0;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--warna-teks-muda);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+}
+.field-mengambang input:focus + label {
+    color: var(--warna-teks);
+}
+.form-aksi {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.btn-batal,
+.btn-simpan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.btn-batal {
+    border: 1px solid var(--warna-latar-sekunder);
+    background: var(--warna-latar);
+    color: var(--warna-teks);
+}
+.btn-simpan {
+    border: 1px solid var(--warna-teks);
+    background: var(--warna-teks);
+    color: var(--warna-latar);
+}
+.btn-batal:hover,
+.btn-simpan:hover {
+    opacity: 0.85;
+}
+.layout-form {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+.kolom-avatar {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.kolom-field {
+    min-width: 0;
+}
+.unggah-avatar:not([hidden]) {
+    display: flex;
+    flex: 1;
+}
+.pratinjau-avatar:not([hidden]) {
+    flex: 1;
+}
+.kolom-field .form-grid {
+    margin-bottom: 0;
+}
+.unggah-avatar {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 220px;
+    padding: 16px;
+    border: 1px dashed var(--warna-latar-sekunder);
+    border-radius: 8px;
+    background: var(--warna-latar);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, background 0.2s;
+}
+.unggah-avatar:hover,
+.unggah-avatar.seret-aktif {
+    border-color: var(--warna-teks);
+    background: #f7f7f7;
+}
+.unggah-avatar svg {
+    color: var(--warna-teks-muda);
+}
+.unggah-avatar span {
+    font-size: 13px;
+    color: var(--warna-teks);
+}
+.unggah-avatar em {
+    font-size: 11px;
+    color: var(--warna-teks-muda);
+    font-style: normal;
+    font-family: var(--font-mono);
+}
+.pratinjau-avatar {
+    position: relative;
+}
+.pratinjau-avatar:not([hidden]) {
+    display: flex;
+}
+.pratinjau-avatar img {
+    width: 100%;
+    height: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: var(--warna-latar-sekunder);
+}
+.btn-hapus-avatar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 50%;
+    background: var(--warna-latar);
+    cursor: pointer;
+    color: var(--warna-teks);
+}
+@media (max-width: 520px) {
     body {
         padding: 24px 12px;
     }
     th, td {
-        padding: 10px 8px;
-        font-size: 13px;
+        padding: 8px 6px;
+        font-size: 11px;
     }
-    .modal-grid {
+    .overlay-modal {
+        align-items: flex-end;
+        padding: 0;
+        max-height: 80vh;
+    }
+    .modal {
+        max-width: 100%;
+        max-height: 88vh;
+        border-radius: 12px 12px 0 0;
+    }
+    .layout-form {
         grid-template-columns: 1fr;
     }
+    .unggah-avatar {
+        min-height: 160px;
+    }
     .paginasi {
-        justify-content: center;
+        gap: 4px;
     }
 }
 </style>
 </head>
 <body>
 <div class="pembungkus">
+    <h1>Dokumentasi Data Pengguna</h1>
     <div class="wadah-tabel">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Lengkap</th>
-                    <th>Email</th>
-                    <th>Peran</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="isi-tabel"></tbody>
-        </table>
-        <div class="paginasi tersembunyi" id="paginasi">
-            <button class="tombol-paginasi" id="btn-prev" aria-label="Halaman sebelumnya">
-                <i data-lucide="chevron-left" width="16" height="16"></i>
+        <div class="bungkus-tabel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Lengkap</th>
+                        <th>Email</th>
+                        <th>Peran</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="isi-tabel"></tbody>
+            </table>
+        </div>
+        <div class="bilah-bawah">
+            <button class="btn-tambah" id="btn-tambah">
+                <i data-lucide="plus" width="16" height="16"></i>
+                Tambah Data
             </button>
-            <div id="nomor-halaman"></div>
-            <button class="tombol-paginasi" id="btn-next" aria-label="Halaman berikutnya">
-                <i data-lucide="chevron-right" width="16" height="16"></i>
-            </button>
+            <div class="paginasi tersembunyi" id="paginasi">
+                <button class="tombol-paginasi" id="btn-prev" aria-label="Halaman sebelumnya">
+                    <i data-lucide="chevron-left" width="16" height="16"></i>
+                </button>
+                <div id="nomor-halaman"></div>
+                <button class="tombol-paginasi" id="btn-next" aria-label="Halaman berikutnya">
+                    <i data-lucide="chevron-right" width="16" height="16"></i>
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -272,6 +569,82 @@ tbody tr:hover {
         </div>
     </div>
 </div>
+
+<div class="overlay-modal" id="overlay-tambah">
+    <div class="modal modal-lebar">
+        <div class="modal-header">
+            <h2>Tambah Data Pengguna</h2>
+            <button class="btn-tutup" id="btn-tutup-tambah" aria-label="Tutup">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="form-tambah" id="form-tambah">
+                <div class="layout-form">
+                    <div class="field-form kolom-avatar">
+                        <label for="input-url-avatar">Avatar</label>
+                        <div class="unggah-avatar" id="unggah-avatar" role="button" tabindex="0" aria-label="Unggah avatar">
+                            <i data-lucide="image-up"></i>
+                            <span>Seret &amp; lepas gambar di sini, atau klik untuk memilih</span>
+                            <em>PNG / JPG / WebP · maks 2 MB</em>
+                        </div>
+                        <input type="file" id="input-file-avatar" accept="image/png,image/jpeg,image/webp" hidden>
+                        <div class="pratinjau-avatar" id="pratinjau-avatar" hidden>
+                            <img id="gambar-pratinjau" alt="Pratinjau avatar">
+                            <button type="button" class="btn-hapus-avatar" id="btn-hapus-avatar" aria-label="Hapus avatar">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" id="input-url-avatar" name="url_avatar">
+                    </div>
+                    <div class="kolom-field">
+                        <div class="form-grid">
+                            <div class="field-form">
+                                <label for="input-peran">Peran</label>
+                                <select id="input-peran" name="peran">
+                                    <option value="pengguna">Pengguna</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="field-form">
+                                <label for="input-status">Status</label>
+                                <select id="input-status" name="status">
+                                    <option value="aktif">Aktif</option>
+                                    <option value="nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                            <div class="field-mengambang kolom-penuh">
+                                <input type="text" id="input-nama-lengkap" name="nama_lengkap" placeholder=" " required>
+                                <label for="input-nama-lengkap">Nama Lengkap</label>
+                            </div>
+                            <div class="field-mengambang">
+                                <input type="text" id="input-nama-pengguna" name="nama_pengguna" placeholder=" ">
+                                <label for="input-nama-pengguna">Nama Pengguna</label>
+                            </div>
+                            <div class="field-mengambang">
+                                <input type="password" id="input-kata-sandi" name="kata_sandi" placeholder=" " required>
+                                <label for="input-kata-sandi">Kata Sandi</label>
+                            </div>
+                            <div class="field-mengambang">
+                                <input type="email" id="input-email" name="email" placeholder=" " required>
+                                <label for="input-email">Email</label>
+                            </div>
+                            <div class="field-mengambang">
+                                <input type="text" id="input-nomor-telepon" name="nomor_telepon" placeholder=" ">
+                                <label for="input-nomor-telepon">Nomor HP</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-aksi">
+                    <button type="button" class="btn-batal" id="btn-batal-tambah">Batal</button>
+                    <button type="submit" class="btn-simpan">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 lucide.createIcons();
 
@@ -285,6 +658,88 @@ const paginasi = document.getElementById("paginasi");
 const btnPrev = document.getElementById("btn-prev");
 const btnNext = document.getElementById("btn-next");
 const nomorHalaman = document.getElementById("nomor-halaman");
+
+const overlayTambah = document.getElementById("overlay-tambah");
+const btnTambah = document.getElementById("btn-tambah");
+const btnTutupTambah = document.getElementById("btn-tutup-tambah");
+const btnBatalTambah = document.getElementById("btn-batal-tambah");
+const formTambah = document.getElementById("form-tambah");
+const unggahAvatar = document.getElementById("unggah-avatar");
+const inputFileAvatar = document.getElementById("input-file-avatar");
+const pratinjauAvatar = document.getElementById("pratinjau-avatar");
+const gambarPratinjau = document.getElementById("gambar-pratinjau");
+const btnHapusAvatar = document.getElementById("btn-hapus-avatar");
+const inputUrlAvatar = document.getElementById("input-url-avatar");
+
+const UKURAN_MAKS_AVATAR = 2 * 1024 * 1024;
+const TIPE_AVATAR = ["image/png", "image/jpeg", "image/webp"];
+
+function setelAvatarBerhasil(dataUrl) {
+    inputUrlAvatar.value = dataUrl;
+    gambarPratinjau.src = dataUrl;
+    pratinjauAvatar.hidden = false;
+    unggahAvatar.hidden = true;
+}
+
+function resetAvatar() {
+    inputUrlAvatar.value = "";
+    gambarPratinjau.src = "";
+    pratinjauAvatar.hidden = true;
+    unggahAvatar.hidden = false;
+    inputFileAvatar.value = "";
+}
+
+function prosesFileAvatar(file) {
+    if (!file) return;
+
+    if (!TIPE_AVATAR.includes(file.type)) {
+        alert("Format gambar harus PNG, JPG, atau WebP.");
+        return;
+    }
+
+    if (file.size > UKURAN_MAKS_AVATAR) {
+        alert("Ukuran gambar maksimal 2 MB.");
+        return;
+    }
+
+    const pembaca = new FileReader();
+    pembaca.onload = (e) => setelAvatarBerhasil(e.target.result);
+    pembaca.onerror = () => alert("Gagal membaca gambar.");
+    pembaca.readAsDataURL(file);
+}
+
+unggahAvatar.addEventListener("click", () => inputFileAvatar.click());
+
+unggahAvatar.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        inputFileAvatar.click();
+    }
+});
+
+inputFileAvatar.addEventListener("change", () => {
+    prosesFileAvatar(inputFileAvatar.files[0]);
+});
+
+["dragenter", "dragover"].forEach((nama) => {
+    unggahAvatar.addEventListener(nama, (e) => {
+        e.preventDefault();
+        unggahAvatar.classList.add("seret-aktif");
+    });
+});
+
+["dragleave", "drop"].forEach((nama) => {
+    unggahAvatar.addEventListener(nama, (e) => {
+        e.preventDefault();
+        unggahAvatar.classList.remove("seret-aktif");
+    });
+});
+
+unggahAvatar.addEventListener("drop", (e) => {
+    prosesFileAvatar(e.dataTransfer.files[0]);
+});
+
+btnHapusAvatar.addEventListener("click", resetAvatar);
 
 let semuaPengguna = [];
 let halamanAktif = 1;
@@ -428,84 +883,34 @@ async function bukaModal(id) {
 
     modalNama.textContent = pengguna.nama_lengkap;
 
-    modalGrid.innerHTML = `
+    const fieldDetail = [
+        ["Email", pengguna.email],
+        ["Nomor HP", pengguna.nomor_telepon || "-"],
+        ["Nama Pengguna", pengguna.nama_pengguna || "-"],
+        ["Peran", pengguna.peran],
+        ["Status", pengguna.status],
+        ["Email Terverifikasi", pengguna.email_terverifikasi_pada
+            ? new Date(pengguna.email_terverifikasi_pada).toLocaleString("id-ID")
+            : "-"],
+        ["Telepon Terverifikasi", pengguna.telepon_terverifikasi_pada
+            ? new Date(pengguna.telepon_terverifikasi_pada).toLocaleString("id-ID")
+            : "-"],
+        ["Login Terakhir", pengguna.login_terakhir_pada
+            ? new Date(pengguna.login_terakhir_pada).toLocaleString("id-ID")
+            : "-"],
+        ["Dibuat Pada", new Date(pengguna.dibuat_pada).toLocaleString("id-ID")],
+        ["Diperbarui Pada", pengguna.diperbarui_pada
+            ? new Date(pengguna.diperbarui_pada).toLocaleString("id-ID")
+            : "-"],
+    ];
+
+    modalGrid.innerHTML = fieldDetail.map(([label, nilai], indeks) => `
+        ${indeks > 0 ? '<hr class="modal-field-hr">' : ""}
         <div class="modal-field">
-            <span>Email</span>
-            <strong>${pengguna.email}</strong>
+            <span>${label}</span>
+            <strong>${nilai}</strong>
         </div>
-        <div class="modal-field">
-            <span>Nomor HP</span>
-            <strong>${pengguna.nomor_telepon || "-"}</strong>
-        </div>
-        <div class="modal-field">
-            <span>Nama Pengguna</span>
-            <strong>${pengguna.nama_pengguna || "-"}</strong>
-        </div>
-        <div class="modal-field">
-            <span>Peran</span>
-            <strong>${pengguna.peran}</strong>
-        </div>
-        <div class="modal-field">
-            <span>Status</span>
-            <strong>${pengguna.status}</strong>
-        </div>
-        <div class="modal-field">
-            <span>Email Terverifikasi</span>
-            <strong>
-                ${
-                    pengguna.email_terverifikasi_pada
-                        ? new Date(
-                            pengguna.email_terverifikasi_pada
-                        ).toLocaleString("id-ID")
-                        : "-"
-                }
-            </strong>
-        </div>
-        <div class="modal-field">
-            <span>Telepon Terverifikasi</span>
-            <strong>
-                ${
-                    pengguna.telepon_terverifikasi_pada
-                        ? new Date(
-                            pengguna.telepon_terverifikasi_pada
-                        ).toLocaleString("id-ID")
-                        : "-"
-                }
-            </strong>
-        </div>
-        <div class="modal-field">
-            <span>Login Terakhir</span>
-            <strong>
-                ${
-                    pengguna.login_terakhir_pada
-                        ? new Date(
-                            pengguna.login_terakhir_pada
-                        ).toLocaleString("id-ID")
-                        : "-"
-                }
-            </strong>
-        </div>
-        <div class="modal-field">
-            <span>Dibuat Pada</span>
-            <strong>
-                ${new Date(
-                    pengguna.dibuat_pada
-                ).toLocaleString("id-ID")}
-            </strong>
-        </div>
-        <div class="modal-field">
-            <span>Diperbarui Pada</span>
-            <strong>
-                ${
-                    pengguna.diperbarui_pada
-                        ? new Date(
-                            pengguna.diperbarui_pada
-                        ).toLocaleString("id-ID")
-                        : "-"
-                }
-            </strong>
-        </div>
-    `;
+    `).join("");
 
     overlayModal.classList.add("aktif");
     lucide.createIcons();
@@ -513,6 +918,42 @@ async function bukaModal(id) {
 
 function tutupModal() {
     overlayModal.classList.remove("aktif");
+}
+
+function bukaModalTambah() {
+    formTambah.reset();
+    resetAvatar();
+    overlayTambah.classList.add("aktif");
+}
+
+function tutupModalTambah() {
+    overlayTambah.classList.remove("aktif");
+}
+
+async function simpanPengguna(e) {
+    e.preventDefault();
+
+    const dataForm = new FormData(formTambah);
+    const payload = Object.fromEntries(dataForm.entries());
+
+    try {
+        const response = await fetch("/api/apitest/pengguna", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        const hasil = await response.json();
+
+        if (!response.ok) {
+            throw new Error(hasil.pesan || `HTTP ${response.status}`);
+        }
+
+        tutupModalTambah();
+        muatPengguna();
+    } catch (error) {
+        console.error("Gagal menyimpan pengguna:", error);
+    }
 }
 
 isiTabel.addEventListener("click", (e) => {
@@ -530,6 +971,18 @@ overlayModal.addEventListener("click", (e) => {
         tutupModal();
     }
 });
+
+btnTambah.addEventListener("click", bukaModalTambah);
+btnTutupTambah.addEventListener("click", tutupModalTambah);
+btnBatalTambah.addEventListener("click", tutupModalTambah);
+
+overlayTambah.addEventListener("click", (e) => {
+    if (e.target === overlayTambah) {
+        tutupModalTambah();
+    }
+});
+
+formTambah.addEventListener("submit", simpanPengguna);
 
 btnPrev.addEventListener("click", () => {
     if (halamanAktif > 1) {

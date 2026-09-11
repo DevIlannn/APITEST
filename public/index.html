@@ -290,20 +290,50 @@ let semuaPengguna = [];
 let halamanAktif = 1;
 const itemPerHalaman = 9;
 
-const dummyPengguna = [];
+async function muatPengguna() {
+    try {
+        const response = await fetch("/api/apitest/pengguna");
 
-function muatPengguna() {
-    semuaPengguna = dummyPengguna;
-    
-    if (semuaPengguna.length === 0) {
-        tampilkanKosong();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        semuaPengguna = Array.isArray(data)
+            ? data
+            : Array.isArray(data.data)
+                ? data.data
+                : [];
+
+        halamanAktif = 1;
+
+        if (semuaPengguna.length === 0) {
+            tampilkanKosong();
+            paginasi.classList.add("tersembunyi");
+            return;
+        }
+
+        tampilkanHalaman(halamanAktif);
+        buatPaginasi();
+        updateStatusPaginasi();
+    } catch (error) {
+        console.error("Gagal memuat pengguna:", error);
+
+        isiTabel.innerHTML = `
+            <tr class="baris-kosong">
+                <td colspan="5">
+                    <div class="kosong">
+                        <i data-lucide="triangle-alert"></i>
+                        <span>Gagal memuat data pengguna</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+
         paginasi.classList.add("tersembunyi");
-        return;
+        lucide.createIcons();
     }
-
-    tampilkanHalaman(halamanAktif);
-    buatPaginasi();
-    updateStatusPaginasi();
 }
 
 function tampilkanHalaman(halaman) {
@@ -324,28 +354,34 @@ function tampilkanHalaman(halaman) {
             </td>
         </tr>
     `).join("");
+
     lucide.createIcons();
 }
 
 function buatPaginasi() {
     const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
-    
+
     if (totalHalaman <= 1) {
         paginasi.classList.add("tersembunyi");
         return;
     }
 
     paginasi.classList.remove("tersembunyi");
-    
-    const tombolHalaman = Array.from({ length: totalHalaman }, (_, i) => i + 1)
-        .map(halaman => `
-            <button class="tombol-paginasi ${halaman === halamanAktif ? "aktif" : ""}" data-halaman="${halaman}">
-                ${halaman}
-            </button>
-        `).join("");
-    
+
+    const tombolHalaman = Array.from(
+        { length: totalHalaman },
+        (_, i) => i + 1
+    ).map(halaman => `
+        <button
+            class="tombol-paginasi ${halaman === halamanAktif ? "aktif" : ""}"
+            data-halaman="${halaman}"
+        >
+            ${halaman}
+        </button>
+    `).join("");
+
     nomorHalaman.innerHTML = tombolHalaman;
-    
+
     nomorHalaman.querySelectorAll(".tombol-paginasi").forEach(tombol => {
         tombol.addEventListener("click", () => {
             halamanAktif = parseInt(tombol.dataset.halaman);
@@ -357,7 +393,10 @@ function buatPaginasi() {
 }
 
 function updateStatusPaginasi() {
-    const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
+    const totalHalaman = Math.ceil(
+        semuaPengguna.length / itemPerHalaman
+    );
+
     btnPrev.disabled = halamanAktif === 1;
     btnNext.disabled = halamanAktif === totalHalaman;
 }
@@ -373,14 +412,20 @@ function tampilkanKosong() {
             </td>
         </tr>
     `;
+
     lucide.createIcons();
 }
 
 async function bukaModal(id) {
-    const pengguna = semuaPengguna.find(p => p.id === id);
+    const pengguna = semuaPengguna.find(p => p.id == id);
+
     if (!pengguna) return;
 
-    modalAvatar.src = pengguna.url_avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(pengguna.nama_lengkap);
+    modalAvatar.src =
+        pengguna.url_avatar ||
+        "https://ui-avatars.com/api/?name=" +
+        encodeURIComponent(pengguna.nama_lengkap);
+
     modalNama.textContent = pengguna.nama_lengkap;
 
     modalGrid.innerHTML = `
@@ -406,23 +451,59 @@ async function bukaModal(id) {
         </div>
         <div class="modal-field">
             <span>Email Terverifikasi</span>
-            <strong>${pengguna.email_terverifikasi_pada ? new Date(pengguna.email_terverifikasi_pada).toLocaleString("id-ID") : "-"}</strong>
+            <strong>
+                ${
+                    pengguna.email_terverifikasi_pada
+                        ? new Date(
+                            pengguna.email_terverifikasi_pada
+                        ).toLocaleString("id-ID")
+                        : "-"
+                }
+            </strong>
         </div>
         <div class="modal-field">
             <span>Telepon Terverifikasi</span>
-            <strong>${pengguna.telepon_terverifikasi_pada ? new Date(pengguna.telepon_terverifikasi_pada).toLocaleString("id-ID") : "-"}</strong>
+            <strong>
+                ${
+                    pengguna.telepon_terverifikasi_pada
+                        ? new Date(
+                            pengguna.telepon_terverifikasi_pada
+                        ).toLocaleString("id-ID")
+                        : "-"
+                }
+            </strong>
         </div>
         <div class="modal-field">
             <span>Login Terakhir</span>
-            <strong>${pengguna.login_terakhir_pada ? new Date(pengguna.login_terakhir_pada).toLocaleString("id-ID") : "-"}</strong>
+            <strong>
+                ${
+                    pengguna.login_terakhir_pada
+                        ? new Date(
+                            pengguna.login_terakhir_pada
+                        ).toLocaleString("id-ID")
+                        : "-"
+                }
+            </strong>
         </div>
         <div class="modal-field">
             <span>Dibuat Pada</span>
-            <strong>${new Date(pengguna.dibuat_pada).toLocaleString("id-ID")}</strong>
+            <strong>
+                ${new Date(
+                    pengguna.dibuat_pada
+                ).toLocaleString("id-ID")}
+            </strong>
         </div>
         <div class="modal-field">
             <span>Diperbarui Pada</span>
-            <strong>${pengguna.diperbarui_pada ? new Date(pengguna.diperbarui_pada).toLocaleString("id-ID") : "-"}</strong>
+            <strong>
+                ${
+                    pengguna.diperbarui_pada
+                        ? new Date(
+                            pengguna.diperbarui_pada
+                        ).toLocaleString("id-ID")
+                        : "-"
+                }
+            </strong>
         </div>
     `;
 
@@ -434,15 +515,20 @@ function tutupModal() {
     overlayModal.classList.remove("aktif");
 }
 
-document.getElementById("isi-tabel").addEventListener("click", (e) => {
+isiTabel.addEventListener("click", (e) => {
     const tombol = e.target.closest(".btn-aksi");
+
     if (!tombol) return;
+
     bukaModal(tombol.dataset.id);
 });
 
 btnTutup.addEventListener("click", tutupModal);
+
 overlayModal.addEventListener("click", (e) => {
-    if (e.target === overlayModal) tutupModal();
+    if (e.target === overlayModal) {
+        tutupModal();
+    }
 });
 
 btnPrev.addEventListener("click", () => {
@@ -455,7 +541,10 @@ btnPrev.addEventListener("click", () => {
 });
 
 btnNext.addEventListener("click", () => {
-    const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
+    const totalHalaman = Math.ceil(
+        semuaPengguna.length / itemPerHalaman
+    );
+
     if (halamanAktif < totalHalaman) {
         halamanAktif++;
         tampilkanHalaman(halamanAktif);

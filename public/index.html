@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dokumentasi Data Pengguna</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --warna-latar: #FFFFFF;
+    --warna-latar-sekunder: #D7D7D7;
+    --warna-teks: #111111;
+    --warna-teks-muda: #666666;
+    --font-body: 'Poppins', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: var(--font-body);
+    background: var(--warna-latar);
+    color: var(--warna-teks);
+    padding: 48px 16px;
+}
+.pembungkus {
+    max-width: 668px;
+    margin: 0 auto;
+}
+h1 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 24px;
+    text-align: center;
+}
+.wadah-tabel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--warna-latar-sekunder);
+}
+th, td {
+    text-align: left;
+    padding: 12px 16px;
+    border: 1px solid var(--warna-latar-sekunder);
+    font-size: 14px;
+    font-family: var(--font-body);
+}
+th {
+    background: var(--warna-latar-sekunder);
+    font-weight: 500;
+}
+tbody tr:hover {
+    background: var(--warna-latar-sekunder);
+}
+.baris-kosong td {
+    text-align: center;
+    padding: 64px 16px;
+}
+.baris-kosong .kosong {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+.btn-aksi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--warna-latar-sekunder);
+    background: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--warna-teks);
+    transition: background 0.2s;
+}
+.btn-aksi:hover {
+    background: var(--warna-latar-sekunder);
+}
+.paginasi {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.paginasi.tersembunyi {
+    display: none;
+}
+.tombol-paginasi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--warna-latar-sekunder);
+    background: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--warna-teks);
+    font-family: var(--font-body);
+    font-size: 14px;
+    transition: background 0.2s;
+}
+.tombol-paginasi:hover:not(:disabled) {
+    background: var(--warna-latar-sekunder);
+}
+.tombol-paginasi:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.tombol-paginasi.aktif {
+    background: var(--warna-teks);
+    color: var(--warna-latar);
+}
+.overlay-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    z-index: 100;
+}
+.overlay-modal.aktif {
+    display: flex;
+}
+.modal {
+    width: 100%;
+    max-width: 420px;
+    background: var(--warna-latar);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+.modal-header {
+    display: flex;
+    justify-content: flex-start;
+    padding: 12px 16px;
+}
+.btn-tutup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--warna-teks);
+}
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 24px;
+    text-align: center;
+}
+.modal-avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--warna-latar-sekunder);
+    margin-bottom: 16px;
+}
+.modal-nama {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 16px;
+    font-family: var(--font-body);
+}
+.modal-body hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--warna-latar-sekunder);
+    margin-bottom: 16px;
+}
+.modal-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    text-align: left;
+}
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.modal-field span {
+    font-size: 11px;
+    color: var(--warna-teks-muda);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-weight: 500;
+}
+.modal-field strong {
+    font-size: 14px;
+    font-weight: 400;
+    word-break: break-word;
+    font-family: var(--font-body);
+}
+@media (max-width: 480px) {
+    body {
+        padding: 24px 12px;
+    }
+    th, td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+    .paginasi {
+        justify-content: center;
+    }
+}
+</style>
+</head>
+<body>
+<div class="pembungkus">
+    <div class="wadah-tabel">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Lengkap</th>
+                    <th>Email</th>
+                    <th>Peran</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="isi-tabel"></tbody>
+        </table>
+        <div class="paginasi tersembunyi" id="paginasi">
+            <button class="tombol-paginasi" id="btn-prev" aria-label="Halaman sebelumnya">
+                <i data-lucide="chevron-left" width="16" height="16"></i>
+            </button>
+            <div id="nomor-halaman"></div>
+            <button class="tombol-paginasi" id="btn-next" aria-label="Halaman berikutnya">
+                <i data-lucide="chevron-right" width="16" height="16"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay-modal" id="overlay-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <button class="btn-tutup" id="btn-tutup" aria-label="Tutup">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <img class="modal-avatar" id="modal-avatar" src="" alt="Avatar">
+            <h2 class="modal-nama" id="modal-nama"></h2>
+            <hr>
+            <div class="modal-grid" id="modal-grid"></div>
+        </div>
+    </div>
+</div>
+<script>
+lucide.createIcons();
+
+const overlayModal = document.getElementById("overlay-modal");
+const btnTutup = document.getElementById("btn-tutup");
+const modalAvatar = document.getElementById("modal-avatar");
+const modalNama = document.getElementById("modal-nama");
+const modalGrid = document.getElementById("modal-grid");
+const isiTabel = document.getElementById("isi-tabel");
+const paginasi = document.getElementById("paginasi");
+const btnPrev = document.getElementById("btn-prev");
+const btnNext = document.getElementById("btn-next");
+const nomorHalaman = document.getElementById("nomor-halaman");
+
+let semuaPengguna = [];
+let halamanAktif = 1;
+const itemPerHalaman = 9;
+
+const dummyPengguna = [];
+
+function muatPengguna() {
+    semuaPengguna = dummyPengguna;
+    
+    if (semuaPengguna.length === 0) {
+        tampilkanKosong();
+        paginasi.classList.add("tersembunyi");
+        return;
+    }
+
+    tampilkanHalaman(halamanAktif);
+    buatPaginasi();
+    updateStatusPaginasi();
+}
+
+function tampilkanHalaman(halaman) {
+    const mulai = (halaman - 1) * itemPerHalaman;
+    const akhir = mulai + itemPerHalaman;
+    const dataBulanIni = semuaPengguna.slice(mulai, akhir);
+
+    isiTabel.innerHTML = dataBulanIni.map((pengguna) => `
+        <tr>
+            <td>${pengguna.nama_lengkap}</td>
+            <td>${pengguna.email}</td>
+            <td>${pengguna.peran}</td>
+            <td>${pengguna.status}</td>
+            <td>
+                <button class="btn-aksi" data-id="${pengguna.id}" aria-label="Lihat detail">
+                    <i data-lucide="eye"></i>
+                </button>
+            </td>
+        </tr>
+    `).join("");
+    lucide.createIcons();
+}
+
+function buatPaginasi() {
+    const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
+    
+    if (totalHalaman <= 1) {
+        paginasi.classList.add("tersembunyi");
+        return;
+    }
+
+    paginasi.classList.remove("tersembunyi");
+    
+    const tombolHalaman = Array.from({ length: totalHalaman }, (_, i) => i + 1)
+        .map(halaman => `
+            <button class="tombol-paginasi ${halaman === halamanAktif ? "aktif" : ""}" data-halaman="${halaman}">
+                ${halaman}
+            </button>
+        `).join("");
+    
+    nomorHalaman.innerHTML = tombolHalaman;
+    
+    nomorHalaman.querySelectorAll(".tombol-paginasi").forEach(tombol => {
+        tombol.addEventListener("click", () => {
+            halamanAktif = parseInt(tombol.dataset.halaman);
+            tampilkanHalaman(halamanAktif);
+            buatPaginasi();
+            updateStatusPaginasi();
+        });
+    });
+}
+
+function updateStatusPaginasi() {
+    const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
+    btnPrev.disabled = halamanAktif === 1;
+    btnNext.disabled = halamanAktif === totalHalaman;
+}
+
+function tampilkanKosong() {
+    isiTabel.innerHTML = `
+        <tr class="baris-kosong">
+            <td colspan="5">
+                <div class="kosong">
+                    <i data-lucide="inbox"></i>
+                    <span>Belum ada data pengguna</span>
+                </div>
+            </td>
+        </tr>
+    `;
+    lucide.createIcons();
+}
+
+async function bukaModal(id) {
+    const pengguna = semuaPengguna.find(p => p.id === id);
+    if (!pengguna) return;
+
+    modalAvatar.src = pengguna.url_avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(pengguna.nama_lengkap);
+    modalNama.textContent = pengguna.nama_lengkap;
+
+    modalGrid.innerHTML = `
+        <div class="modal-field">
+            <span>Email</span>
+            <strong>${pengguna.email}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Nomor HP</span>
+            <strong>${pengguna.nomor_telepon || "-"}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Nama Pengguna</span>
+            <strong>${pengguna.nama_pengguna || "-"}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Peran</span>
+            <strong>${pengguna.peran}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Status</span>
+            <strong>${pengguna.status}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Email Terverifikasi</span>
+            <strong>${pengguna.email_terverifikasi_pada ? new Date(pengguna.email_terverifikasi_pada).toLocaleString("id-ID") : "-"}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Telepon Terverifikasi</span>
+            <strong>${pengguna.telepon_terverifikasi_pada ? new Date(pengguna.telepon_terverifikasi_pada).toLocaleString("id-ID") : "-"}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Login Terakhir</span>
+            <strong>${pengguna.login_terakhir_pada ? new Date(pengguna.login_terakhir_pada).toLocaleString("id-ID") : "-"}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Dibuat Pada</span>
+            <strong>${new Date(pengguna.dibuat_pada).toLocaleString("id-ID")}</strong>
+        </div>
+        <div class="modal-field">
+            <span>Diperbarui Pada</span>
+            <strong>${pengguna.diperbarui_pada ? new Date(pengguna.diperbarui_pada).toLocaleString("id-ID") : "-"}</strong>
+        </div>
+    `;
+
+    overlayModal.classList.add("aktif");
+    lucide.createIcons();
+}
+
+function tutupModal() {
+    overlayModal.classList.remove("aktif");
+}
+
+document.getElementById("isi-tabel").addEventListener("click", (e) => {
+    const tombol = e.target.closest(".btn-aksi");
+    if (!tombol) return;
+    bukaModal(tombol.dataset.id);
+});
+
+btnTutup.addEventListener("click", tutupModal);
+overlayModal.addEventListener("click", (e) => {
+    if (e.target === overlayModal) tutupModal();
+});
+
+btnPrev.addEventListener("click", () => {
+    if (halamanAktif > 1) {
+        halamanAktif--;
+        tampilkanHalaman(halamanAktif);
+        buatPaginasi();
+        updateStatusPaginasi();
+    }
+});
+
+btnNext.addEventListener("click", () => {
+    const totalHalaman = Math.ceil(semuaPengguna.length / itemPerHalaman);
+    if (halamanAktif < totalHalaman) {
+        halamanAktif++;
+        tampilkanHalaman(halamanAktif);
+        buatPaginasi();
+        updateStatusPaginasi();
+    }
+});
+
+muatPengguna();
+</script>
+</body>
+</html>

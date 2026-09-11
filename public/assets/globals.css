@@ -1,0 +1,8 @@
+:root {
+  --warna-latar: #111111;
+  --warna-teks: #ededed;
+  --warna-muted: #D7D7D7;
+
+  --font-judul: 'Poppins', sans-serif;
+  --font-teks: 'JetBrains Mono', monospace;
+}

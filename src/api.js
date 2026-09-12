@@ -16,6 +16,13 @@ router.all("/apitest/apikeys", (req, res) => {
     });
 });
 
+router.use("/apitest", (req, res, next) => {
+    if (!req.headers["x-api-key"] && process.env.API_KEYS_APITEST) {
+        req.headers["x-api-key"] = process.env.API_KEYS_APITEST;
+    }
+    next();
+});
+
 router.use("/apitest", verifikasiApiKey);
 
 router.get("/apitest/pengguna", async (req, res) => {

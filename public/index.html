@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Poppins:wght@400;500;600&family=Cookie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <style>
 :root {
     --warna-latar: #FFFFFF;
@@ -488,6 +489,106 @@ tbody tr:hover {
     cursor: pointer;
     color: var(--warna-teks);
 }
+.modal-aksi-detail {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+}
+.modal-aksi-detail button {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.btn-edit-detail {
+    border: 1px solid var(--warna-teks);
+    background: var(--warna-teks);
+    color: var(--warna-latar);
+}
+.btn-hapus-detail {
+    border: 1px solid #C0392B;
+    background: var(--warna-latar);
+    color: #C0392B;
+}
+.modal-aksi-detail button:hover {
+    opacity: 0.85;
+}
+.bilah-sosial {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-sosial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--warna-latar-sekunder);
+    background: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--warna-teks);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-sosial:hover {
+    background: var(--warna-latar-sekunder);
+}
+.dokumentasi-api {
+    margin-top: 32px;
+}
+.dokumentasi-api h2 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+.blok-kode {
+    background: #F7F7F7;
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 6px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+}
+.blok-kode span.label-kode {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--warna-teks-muda);
+    margin-bottom: 8px;
+}
+.blok-kode pre {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.6;
+    white-space: pre;
+}
+@media (max-width: 448px) {
+    .modal-aksi-detail {
+        margin-top: 16px;
+    }
+    .modal-aksi-detail button {
+        height: 32px;
+        font-size: 12px;
+    }
+    .blok-kode {
+        padding: 10px 12px;
+    }
+    .blok-kode pre {
+        font-size: 10.5px;
+    }
+}
 @media (max-width: 520px) {
     body {
         padding: 24px 12px;
@@ -515,6 +616,67 @@ tbody tr:hover {
     .paginasi {
         gap: 4px;
     }
+    .bilah-bawah {
+        flex-wrap: wrap;
+    }
+}
+@media (max-width: 448px) {
+    .overlay-modal {
+      max-height: 100vh;
+    }
+    
+    .modal-header {
+        padding: 10px 14px;
+    }
+    .modal-body {
+        padding: 0 16px 16px;
+    }
+    .modal-avatar {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 12px;
+    }
+    .modal-nama {
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    .modal-field {
+        gap: 8px;
+        padding: 8px 0;
+    }
+    .modal-field span {
+        font-size: 10px;
+    }
+    .modal-field strong {
+        font-size: 13px;
+    }
+    .form-grid {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .layout-form {
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+    .unggah-avatar {
+        min-height: 120px;
+        padding: 12px;
+    }
+    .pratinjau-avatar img {
+        max-height: 140px;
+    }
+    .field-mengambang input {
+        height: 40px;
+    }
+    .field-form select {
+        height: 36px;
+    }
+    .btn-batal,
+    .btn-simpan {
+        height: 34px;
+        padding: 0 14px;
+        font-size: 12px;
+    }
 }
 </style>
 </head>
@@ -537,10 +699,18 @@ tbody tr:hover {
             </table>
         </div>
         <div class="bilah-bawah">
-            <button class="btn-tambah" id="btn-tambah">
-                <i data-lucide="plus" width="16" height="16"></i>
-                Tambah Data
-            </button>
+            <div class="bilah-sosial">
+                <button class="btn-tambah" id="btn-tambah">
+                    <i data-lucide="plus" width="16" height="16"></i>
+                    Tambah Data
+                </button>
+                <a class="btn-sosial" href="https://github.com/DevIlannn" target="_blank" rel="noopener" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a class="btn-sosial" href="https://wa.me/6285137961950" target="_blank" rel="noopener" aria-label="WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
             <div class="paginasi tersembunyi" id="paginasi">
                 <button class="tombol-paginasi" id="btn-prev" aria-label="Halaman sebelumnya">
                     <i data-lucide="chevron-left" width="16" height="16"></i>
@@ -550,6 +720,49 @@ tbody tr:hover {
                     <i data-lucide="chevron-right" width="16" height="16"></i>
                 </button>
             </div>
+        </div>
+    </div>
+
+    <div class="dokumentasi-api">
+        <h2>Dokumentasi API / GET Pengguna</h2>
+        <div class="blok-kode">
+            <span class="label-kode">Request</span>
+            <pre>GET /api/apitest/pengguna</pre>
+        </div>
+        <div class="blok-kode">
+            <span class="label-kode">Response 200</span>
+            <pre>{
+  "status": "ok",
+  "total": 1,
+  "data": [
+    {
+      "id": 1,
+      "email": "nina.larasati@example.com",
+      "email_terverifikasi_pada": null,
+      "nama_pengguna": "ninalarasati",
+      "nama_lengkap": "Nina Larasati",
+      "url_avatar": null,
+      "nomor_telepon": null,
+      "telepon_terverifikasi_pada": null,
+      "peran": "pengguna",
+      "status": "menunggu",
+      "login_terakhir_pada": null,
+      "dibuat_pada": "2024-07-18T15:35:00.000Z",
+      "diperbarui_pada": "2026-09-11T21:29:01.000Z"
+    }
+  ]
+}</pre>
+        </div>
+        <div class="blok-kode">
+            <span class="label-kode">Request / by id</span>
+            <pre>GET /api/apitest/pengguna/:id</pre>
+        </div>
+        <div class="blok-kode">
+            <span class="label-kode">Response 404</span>
+            <pre>{
+  "status": "gagal",
+  "pesan": "Pengguna tidak ditemukan"
+}</pre>
         </div>
     </div>
 </div>
@@ -566,6 +779,16 @@ tbody tr:hover {
             <h2 class="modal-nama" id="modal-nama"></h2>
             <hr>
             <div class="modal-grid" id="modal-grid"></div>
+            <div class="modal-aksi-detail">
+                <button type="button" class="btn-edit-detail" id="btn-edit-detail">
+                    <i data-lucide="pencil" width="14" height="14"></i>
+                    Edit
+                </button>
+                <button type="button" class="btn-hapus-detail" id="btn-hapus-detail">
+                    <i data-lucide="trash-2" width="14" height="14"></i>
+                    Hapus
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -573,13 +796,14 @@ tbody tr:hover {
 <div class="overlay-modal" id="overlay-tambah">
     <div class="modal modal-lebar">
         <div class="modal-header">
-            <h2>Tambah Data Pengguna</h2>
+            <h2 id="judul-form-tambah">Tambah Data Pengguna</h2>
             <button class="btn-tutup" id="btn-tutup-tambah" aria-label="Tutup">
                 <i data-lucide="x"></i>
             </button>
         </div>
         <div class="modal-body">
             <form class="form-tambah" id="form-tambah">
+                <input type="hidden" id="input-id-pengguna" name="id">
                 <div class="layout-form">
                     <div class="field-form kolom-avatar">
                         <label for="input-url-avatar">Avatar</label>
@@ -622,7 +846,7 @@ tbody tr:hover {
                                 <label for="input-nama-pengguna">Nama Pengguna</label>
                             </div>
                             <div class="field-mengambang">
-                                <input type="password" id="input-kata-sandi" name="kata_sandi" placeholder=" " required>
+                                <input type="password" id="input-kata-sandi" name="kata_sandi" placeholder=" ">
                                 <label for="input-kata-sandi">Kata Sandi</label>
                             </div>
                             <div class="field-mengambang">
@@ -638,7 +862,7 @@ tbody tr:hover {
                 </div>
                 <div class="form-aksi">
                     <button type="button" class="btn-batal" id="btn-batal-tambah">Batal</button>
-                    <button type="submit" class="btn-simpan">Simpan</button>
+                    <button type="submit" class="btn-simpan" id="btn-simpan-form">Simpan</button>
                 </div>
             </form>
         </div>
@@ -664,6 +888,12 @@ const btnTambah = document.getElementById("btn-tambah");
 const btnTutupTambah = document.getElementById("btn-tutup-tambah");
 const btnBatalTambah = document.getElementById("btn-batal-tambah");
 const formTambah = document.getElementById("form-tambah");
+const judulFormTambah = document.getElementById("judul-form-tambah");
+const btnSimpanForm = document.getElementById("btn-simpan-form");
+const inputIdPengguna = document.getElementById("input-id-pengguna");
+const inputKataSandi = document.getElementById("input-kata-sandi");
+const btnEditDetail = document.getElementById("btn-edit-detail");
+const btnHapusDetail = document.getElementById("btn-hapus-detail");
 const unggahAvatar = document.getElementById("unggah-avatar");
 const inputFileAvatar = document.getElementById("input-file-avatar");
 const pratinjauAvatar = document.getElementById("pratinjau-avatar");
@@ -871,10 +1101,14 @@ function tampilkanKosong() {
     lucide.createIcons();
 }
 
+let idPenggunaAktif = null;
+
 async function bukaModal(id) {
     const pengguna = semuaPengguna.find(p => p.id == id);
 
     if (!pengguna) return;
+
+    idPenggunaAktif = pengguna.id;
 
     modalAvatar.src =
         pengguna.url_avatar ||
@@ -923,6 +1157,33 @@ function tutupModal() {
 function bukaModalTambah() {
     formTambah.reset();
     resetAvatar();
+    inputIdPengguna.value = "";
+    inputKataSandi.required = true;
+    judulFormTambah.textContent = "Tambah Data Pengguna";
+    btnSimpanForm.textContent = "Simpan";
+    overlayTambah.classList.add("aktif");
+}
+
+function bukaModalEdit(pengguna) {
+    formTambah.reset();
+    resetAvatar();
+
+    inputIdPengguna.value = pengguna.id;
+    inputKataSandi.required = false;
+    judulFormTambah.textContent = "Edit Data Pengguna";
+    btnSimpanForm.textContent = "Perbarui";
+
+    document.getElementById("input-peran").value = pengguna.peran || "pengguna";
+    document.getElementById("input-status").value = pengguna.status || "aktif";
+    document.getElementById("input-nama-lengkap").value = pengguna.nama_lengkap || "";
+    document.getElementById("input-nama-pengguna").value = pengguna.nama_pengguna || "";
+    document.getElementById("input-email").value = pengguna.email || "";
+    document.getElementById("input-nomor-telepon").value = pengguna.nomor_telepon || "";
+
+    if (pengguna.url_avatar) {
+        setelAvatarBerhasil(pengguna.url_avatar);
+    }
+
     overlayTambah.classList.add("aktif");
 }
 
@@ -935,13 +1196,22 @@ async function simpanPengguna(e) {
 
     const dataForm = new FormData(formTambah);
     const payload = Object.fromEntries(dataForm.entries());
+    const id = payload.id;
+    delete payload.id;
+
+    if (!payload.kata_sandi) {
+        delete payload.kata_sandi;
+    }
 
     try {
-        const response = await fetch("/api/apitest/pengguna", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+            id ? `/api/apitest/pengguna/${id}` : "/api/apitest/pengguna",
+            {
+                method: id ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            }
+        );
 
         const hasil = await response.json();
 
@@ -953,6 +1223,27 @@ async function simpanPengguna(e) {
         muatPengguna();
     } catch (error) {
         console.error("Gagal menyimpan pengguna:", error);
+    }
+}
+
+async function hapusPengguna(id) {
+    if (!confirm("Yakin ingin menghapus data pengguna ini?")) return;
+
+    try {
+        const response = await fetch(`/api/apitest/pengguna/${id}`, {
+            method: "DELETE",
+        });
+
+        const hasil = await response.json();
+
+        if (!response.ok) {
+            throw new Error(hasil.pesan || `HTTP ${response.status}`);
+        }
+
+        tutupModal();
+        muatPengguna();
+    } catch (error) {
+        console.error("Gagal menghapus pengguna:", error);
     }
 }
 
@@ -969,6 +1260,21 @@ btnTutup.addEventListener("click", tutupModal);
 overlayModal.addEventListener("click", (e) => {
     if (e.target === overlayModal) {
         tutupModal();
+    }
+});
+
+btnEditDetail.addEventListener("click", () => {
+    const pengguna = semuaPengguna.find(p => p.id == idPenggunaAktif);
+
+    if (!pengguna) return;
+
+    tutupModal();
+    bukaModalEdit(pengguna);
+});
+
+btnHapusDetail.addEventListener("click", () => {
+    if (idPenggunaAktif) {
+        hapusPengguna(idPenggunaAktif);
     }
 });
 

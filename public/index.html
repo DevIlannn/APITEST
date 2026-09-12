@@ -552,6 +552,130 @@ tbody tr:hover {
     font-weight: 500;
     margin-bottom: 12px;
 }
+.kartu-apikey {
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+.kartu-apikey-kosong {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 16px;
+    text-align: center;
+}
+.kartu-apikey-kosong span {
+    font-size: 13px;
+    color: var(--warna-teks-muda);
+}
+.btn-buat-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 16px;
+    border: 1px solid var(--warna-teks);
+    background: var(--warna-teks);
+    color: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+.btn-buat-key:hover {
+    opacity: 0.85;
+}
+.btn-buat-key:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.kartu-apikey-key {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--warna-latar-sekunder);
+    border-radius: 4px;
+    margin-top: 4px;
+}
+.kartu-apikey-key code {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    word-break: break-all;
+}
+.btn-salin-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    border: 1px solid var(--warna-latar-sekunder);
+    background: var(--warna-latar);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--warna-teks);
+    transition: background 0.2s;
+}
+.btn-salin-key:hover {
+    background: var(--warna-latar-sekunder);
+}
+.catatan-apikey {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--warna-teks-muda);
+}
+.catatan-apikey i {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+.tabs-status {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--warna-latar-sekunder);
+    margin: 20px 0 16px;
+    overflow-x: auto;
+}
+.tab-status {
+    position: relative;
+    padding: 10px 2px;
+    border: none;
+    background: transparent;
+    color: var(--warna-teks-muda);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.tab-status.aktif {
+    color: var(--warna-teks);
+}
+.tab-status.aktif::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--warna-teks);
+}
+.painel-status {
+    display: none;
+}
+.painel-status.aktif {
+    display: block;
+}
 .blok-kode {
     background: #F7F7F7;
     border: 1px solid var(--warna-latar-sekunder);
@@ -724,14 +848,139 @@ tbody tr:hover {
     </div>
 
     <div class="dokumentasi-api">
-        <h2>Dokumentasi API / GET Pengguna</h2>
-        <div class="blok-kode">
-            <span class="label-kode">Request</span>
-            <pre>GET /api/apitest/pengguna</pre>
+        <h2>API Keys</h2>
+        <div class="kartu-apikey" id="kartu-apikey">
+            <div class="kartu-apikey-kosong" id="kartu-apikey-kosong">
+                <span>Belum ada api key untuk perangkat ini</span>
+                <button class="btn-buat-key" id="btn-buat-key">
+                    <i data-lucide="key-round" width="16" height="16"></i>
+                    Buat Api Key
+                </button>
+            </div>
+            <div class="kartu-apikey-detail" id="kartu-apikey-detail" hidden>
+                <div class="modal-grid" id="grid-apikey"></div>
+                <div class="catatan-apikey" id="catatan-apikey" hidden>
+                    <i data-lucide="triangle-alert" width="14" height="14"></i>
+                    <span>Api key hanya ditampilkan sekali, simpan sekarang</span>
+                </div>
+            </div>
         </div>
-        <div class="blok-kode">
-            <span class="label-kode">Response 200</span>
-            <pre>{
+
+        <div class="tabs-status" id="tabs-status">
+            <button class="tab-status aktif" data-status="201">201</button>
+            <button class="tab-status" data-status="200">200</button>
+            <button class="tab-status" data-status="401">401</button>
+            <button class="tab-status" data-status="403">403</button>
+            <button class="tab-status" data-status="404">404</button>
+            <button class="tab-status" data-status="409">409</button>
+        </div>
+
+        <div class="painel-status aktif" data-panel="201">
+            <div class="blok-kode">
+                <span class="label-kode">Request / buat atau ambil key sendiri</span>
+                <pre>POST /api/apitest/apikey/:id</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 201 / id belum ada, key baru dibuat</span>
+                <pre>{
+  "status": "ok",
+  "pesan": "Api key baru berhasil dibuat, simpan sekarang karena tidak akan ditampilkan lagi",
+  "data": {
+    "api_key": "sk_live_...",
+    "dibuat_pada": "2026-09-12T01:00:00.000Z"
+  }
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel="200">
+            <div class="blok-kode">
+                <span class="label-kode">Response 200 / id sudah ada, ip dan device cocok</span>
+                <pre>{
+  "status": "ok",
+  "pesan": "Api key sudah pernah dibuat untuk IP / device ini",
+  "data": {
+    "tampilan_key": "sk_live_ab12cd********************ef34",
+    "dibuat_pada": "2026-09-12T01:00:00.000Z"
+  }
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel="401">
+            <div class="blok-kode">
+                <span class="label-kode">Header wajib / akses endpoint apitest lainnya</span>
+                <pre>x-api-key: sk_live_...</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 401 / tanpa api key</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Api key wajib disertakan pada header x-api-key"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel="403">
+            <div class="blok-kode">
+                <span class="label-kode">Response 403 / ip atau device tidak cocok</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "IP atau device tidak cocok dengan pemilik record ini"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 403 / api key tidak valid</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Api key tidak valid atau sudah dicabut"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel="404">
+            <div class="blok-kode">
+                <span class="label-kode">Request / list semua data api_keys, ditolak untuk siapapun</span>
+                <pre>GET, POST, dll /api/apitest/apikeys</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 404 / apikeys selalu ditolak</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Endpoint tidak ditemukan"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel="409">
+            <div class="blok-kode">
+                <span class="label-kode">Response 409 / ip dan device sudah punya key lain</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "IP / device ini sudah memiliki api key lain, gunakan id record tersebut"
+}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="dokumentasi-api">
+        <h2>Dokumentasi API / Data Pengguna</h2>
+
+        <div class="tabs-status" id="tabs-metode">
+            <button class="tab-status aktif" data-metode="get">GET</button>
+            <button class="tab-status" data-metode="post">POST</button>
+            <button class="tab-status" data-metode="put">PUT</button>
+            <button class="tab-status" data-metode="delete">DELETE</button>
+        </div>
+
+        <div class="painel-status aktif" data-panel-metode="get">
+            <div class="blok-kode">
+                <span class="label-kode">Request / list semua pengguna</span>
+                <pre>GET /api/apitest/pengguna</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 200</span>
+                <pre>{
   "status": "ok",
   "total": 1,
   "data": [
@@ -752,17 +1001,158 @@ tbody tr:hover {
     }
   ]
 }</pre>
-        </div>
-        <div class="blok-kode">
-            <span class="label-kode">Request / by id</span>
-            <pre>GET /api/apitest/pengguna/:id</pre>
-        </div>
-        <div class="blok-kode">
-            <span class="label-kode">Response 404</span>
-            <pre>{
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Request / ambil satu pengguna by id</span>
+                <pre>GET /api/apitest/pengguna/:id</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 200</span>
+                <pre>{
+  "status": "ok",
+  "data": {
+    "id": 1,
+    "email": "nina.larasati@example.com",
+    "nama_lengkap": "Nina Larasati",
+    "peran": "pengguna",
+    "status": "menunggu"
+  }
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 404 / id tidak ditemukan</span>
+                <pre>{
   "status": "gagal",
   "pesan": "Pengguna tidak ditemukan"
 }</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 500 / kesalahan server</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Terjadi kesalahan saat mengambil data pengguna"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel-metode="post">
+            <div class="blok-kode">
+                <span class="label-kode">Request / buat pengguna baru</span>
+                <pre>POST /api/apitest/pengguna
+{
+  "email": "nina.larasati@example.com",
+  "kata_sandi": "rahasia123",
+  "nama_lengkap": "Nina Larasati",
+  "nama_pengguna": "ninalarasati",
+  "url_avatar": null,
+  "nomor_telepon": null,
+  "peran": "pengguna",
+  "status": "aktif"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 201</span>
+                <pre>{
+  "status": "ok",
+  "data": {
+    "id": 2,
+    "email": "nina.larasati@example.com",
+    "nama_lengkap": "Nina Larasati",
+    "peran": "pengguna",
+    "status": "aktif"
+  }
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 400 / field wajib kosong</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Email, kata sandi, dan nama lengkap wajib diisi"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 409 / email atau nama pengguna dobel</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Email atau nama pengguna sudah terdaftar"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 500 / kesalahan server</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Terjadi kesalahan saat membuat pengguna"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel-metode="put">
+            <div class="blok-kode">
+                <span class="label-kode">Request / perbarui pengguna</span>
+                <pre>PUT /api/apitest/pengguna/:id
+{
+  "nama_lengkap": "Nina Larasati Putri",
+  "nama_pengguna": "ninalarasatip",
+  "url_avatar": null,
+  "peran": "admin",
+  "status": "aktif"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 200</span>
+                <pre>{
+  "status": "ok",
+  "data": {
+    "id": 2,
+    "email": "nina.larasati@example.com",
+    "nama_lengkap": "Nina Larasati Putri",
+    "peran": "admin",
+    "status": "aktif"
+  }
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 404 / id tidak ditemukan</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Pengguna tidak ditemukan"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 500 / kesalahan server</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Terjadi kesalahan saat memperbarui pengguna"
+}</pre>
+            </div>
+        </div>
+
+        <div class="painel-status" data-panel-metode="delete">
+            <div class="blok-kode">
+                <span class="label-kode">Request / hapus pengguna (soft delete)</span>
+                <pre>DELETE /api/apitest/pengguna/:id</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 200</span>
+                <pre>{
+  "status": "ok",
+  "pesan": "Pengguna berhasil dihapus"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 404 / id tidak ditemukan</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Pengguna tidak ditemukan"
+}</pre>
+            </div>
+            <div class="blok-kode">
+                <span class="label-kode">Response 500 / kesalahan server</span>
+                <pre>{
+  "status": "gagal",
+  "pesan": "Terjadi kesalahan saat menghapus pengguna"
+}</pre>
+            </div>
         </div>
     </div>
 </div>
@@ -970,6 +1360,117 @@ unggahAvatar.addEventListener("drop", (e) => {
 });
 
 btnHapusAvatar.addEventListener("click", resetAvatar);
+
+const btnBuatKey = document.getElementById("btn-buat-key");
+const kartuApikeyKosong = document.getElementById("kartu-apikey-kosong");
+const kartuApikeyDetail = document.getElementById("kartu-apikey-detail");
+const gridApikey = document.getElementById("grid-apikey");
+const catatanApikey = document.getElementById("catatan-apikey");
+const tabsStatus = document.getElementById("tabs-status");
+
+function ambilIdDeviceLokal() {
+    let id = localStorage.getItem("id_device_apikey");
+    if (!id) {
+        id = crypto.randomUUID().replace(/-/g, "").slice(0, 12);
+        localStorage.setItem("id_device_apikey", id);
+    }
+    return id;
+}
+
+function tampilkanApikeyDetail(field, tampilkanCatatan) {
+    kartuApikeyKosong.hidden = true;
+    kartuApikeyDetail.hidden = false;
+
+    gridApikey.innerHTML = field.map(([label, nilai, salin], indeks) => `
+        ${indeks > 0 ? '<hr class="modal-field-hr">' : ""}
+        <div class="modal-field">
+            <span>${label}</span>
+            ${salin
+                ? `<div class="kartu-apikey-key">
+                        <code>${nilai}</code>
+                        <button type="button" class="btn-salin-key" data-salin="${nilai}" aria-label="Salin api key">
+                            <i data-lucide="copy" width="14" height="14"></i>
+                        </button>
+                   </div>`
+                : `<strong>${nilai}</strong>`}
+        </div>
+    `).join("");
+
+    catatanApikey.hidden = !tampilkanCatatan;
+    lucide.createIcons();
+}
+
+async function buatOrAmbilApikey() {
+    btnBuatKey.disabled = true;
+
+    try {
+        const idDevice = ambilIdDeviceLokal();
+        const response = await fetch(`/api/apitest/apikey/${idDevice}`, {
+            method: "POST",
+        });
+
+        const hasil = await response.json();
+
+        if (response.status === 201) {
+            tampilkanApikeyDetail([
+                ["Api Key", hasil.data.api_key, true],
+                ["Dibuat Pada", new Date(hasil.data.dibuat_pada).toLocaleString("id-ID")],
+            ], true);
+            return;
+        }
+
+        if (response.status === 200) {
+            tampilkanApikeyDetail([
+                ["Api Key", hasil.data.tampilan_key],
+                ["Dibuat Pada", new Date(hasil.data.dibuat_pada).toLocaleString("id-ID")],
+            ], false);
+            return;
+        }
+
+        alert(hasil.pesan || `HTTP ${response.status}`);
+    } catch (error) {
+        console.error("Gagal memproses api key:", error);
+        alert("Terjadi kesalahan saat memproses api key");
+    } finally {
+        btnBuatKey.disabled = false;
+    }
+}
+
+btnBuatKey.addEventListener("click", buatOrAmbilApikey);
+
+gridApikey.addEventListener("click", (e) => {
+    const tombol = e.target.closest(".btn-salin-key");
+
+    if (!tombol) return;
+
+    navigator.clipboard.writeText(tombol.dataset.salin);
+});
+
+tabsStatus.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab-status");
+
+    if (!tab) return;
+
+    document.querySelectorAll(".tab-status").forEach(t => t.classList.remove("aktif"));
+    document.querySelectorAll(".painel-status").forEach(p => p.classList.remove("aktif"));
+
+    tab.classList.add("aktif");
+    document.querySelector(`.painel-status[data-panel="${tab.dataset.status}"]`).classList.add("aktif");
+});
+
+const tabsMetode = document.getElementById("tabs-metode");
+
+tabsMetode.addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab-status");
+
+    if (!tab) return;
+
+    tabsMetode.querySelectorAll(".tab-status").forEach(t => t.classList.remove("aktif"));
+    document.querySelectorAll("[data-panel-metode]").forEach(p => p.classList.remove("aktif"));
+
+    tab.classList.add("aktif");
+    document.querySelector(`[data-panel-metode="${tab.dataset.metode}"]`).classList.add("aktif");
+});
 
 let semuaPengguna = [];
 let halamanAktif = 1;

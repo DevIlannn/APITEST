@@ -1,10 +1,22 @@
 import express from "express";
 import bcrypt from "bcryptjs";
 import pool from "./db.js";
+import { ambilOrBuatApiKeyDenganId, verifikasiApiKey } from "./utils.js";
 
 const router = express.Router();
 
 const KOLOM_AMAN = "id, email, email_terverifikasi_pada, nama_pengguna, nama_lengkap, url_avatar, nomor_telepon, telepon_terverifikasi_pada, peran, status, login_terakhir_pada, dibuat_pada, diperbarui_pada";
+
+router.post("/apitest/apikey/:id", ambilOrBuatApiKeyDenganId);
+
+router.all("/apitest/apikeys", (req, res) => {
+    res.status(404).json({
+        status: "gagal",
+        pesan: "Endpoint tidak ditemukan",
+    });
+});
+
+router.use("/apitest", verifikasiApiKey);
 
 router.get("/apitest/pengguna", async (req, res) => {
     try {
